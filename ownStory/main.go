@@ -3,7 +3,11 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"html/template"
+	"log"
+	"net/http"
 	"os"
+	"strings"
 )
 
 type StoryOption struct {
@@ -30,4 +34,21 @@ func main() {
 	}
 
 	json.Unmarshal(data, &story)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		arc := strings.ReplaceAll(r.URL.Path, "/", "")
+		if arc == "" {
+			arc = "intro"
+		}
+		templ, err := template.New("template.html").ParseFiles("template.html")
+		if err != nil {
+			panic(err)
+		}
+
+		templ.Execute(w, story[arc])
+	})
+
+	log.Println("Listening...")
+
+	http.ListenAndServe("localhost:8000", nil)
 }

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Story</title>
+</head>
+<body>
+  <h1>{{ .Title }}</h1>
+
+  {{ range .Story }}
+    <p> {{ . }} </p>
+  {{ end }}
+
+  {{ range .Options}}
+    <a href="/{{ .Arc }}"> {{ .Text }}</a>
+    <br>
+  {{ end }}
+</body>
+</html>
