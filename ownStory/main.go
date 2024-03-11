@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	storyData "ownStory/sotryData"
 	"strings"
 )
 
@@ -21,8 +21,6 @@ type StoryChapter struct {
 	Options []StoryOption `json:"options"`
 }
 
-var story map[string]StoryChapter = make(map[string]StoryChapter)
-
 func main() {
 	storyFile := flag.String("f", "story.json", "Select story file")
 
@@ -33,7 +31,10 @@ func main() {
 		panic(err)
 	}
 
-	json.Unmarshal(data, &story)
+	story, err := storyData.NewStory(data)
+	if err != nil {
+		panic(err)
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		arc := strings.ReplaceAll(r.URL.Path, "/", "")
